@@ -1,0 +1,39 @@
+---
+title: "Untitled"
+author: "Mallory Dickerson"
+date: "9/3/2022"
+output: 
+  html_document:
+    keep_md: true
+---
+
+```{r}
+?iris
+str(iris)
+library(tidyverse)
+```
+
+ggplot(data = iris) +
+  geom_point(mapping = aes(x = Sepal.Length, y = Sepal.Width, color = Species, shape = Species))
+
+
+
+ggplot(data = iris) +
+  geom_point(mapping = aes(x = Petal.Width, y = Petal.Length, color = Species, shape = Species)) +
+  facet_wrap(~ Species, nrow = 2)
+
+ggplot(data = iris) +
+  geom_point(mapping = aes(x = Petal.Length, y = Petal.Width, color = Species, shape = Species))+
+  geom_smooth(method = lm, mapping = aes(x = Petal.Length, y = Petal.Width))
+
+
+ggplot(iris)+
+  geom_histogram(alpha = 1, mapping = aes(x = Sepal.Length, fill = Species), color = "black")+
+  geom_vline(aes(xintercept = mean(Sepal.Length)))
+
+
+my driving question associated to my visualizations
+Do plant species fall into identifiable categories based on petal and sepal lengths and widths?
+
+The visulaziations demonstrates clear groupings of plant species using the mentioned characteristics.
+  
