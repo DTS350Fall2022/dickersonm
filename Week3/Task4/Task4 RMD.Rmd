@@ -1,0 +1,89 @@
+---
+title: "Task4"
+author: "Mallory Dickerson"
+date: "9/7/2022"
+output: 
+  html_document:
+    theme: cosmo
+    keep_md: true
+---
+
+```{r}
+library(tidyverse)
+library(knitr)
+?iris
+```
+
+```{r converting to a tibble}
+iris_data <- as_tibble(iris)
+```
+
+```{r arranging by sepal length}
+arr_SL <- arrange(iris_data, (Sepal.Length))
+arr_SL
+```
+
+```{r new dataset testdat}
+testdat <- select(iris_data, Species, Petal.Width)
+testdat
+```
+
+```{r means for each species}
+species_mean <- iris_data %>%
+  group_by(Species) %>%
+  summarize(mean(Sepal.Length), mean(Sepal.Width), mean(Petal.Length), mean(Petal.Width))
+species_mean
+```
+
+```{r iris_min}
+select_iris <- select(iris_data, Species, Sepal.Width, Petal.Width, Sepal.Length, Petal.Length)
+iris_min <- filter(select_iris, Sepal.Width >= 3, Petal.Width != 2.5)
+iris_min
+```
+
+```{r iris_size}
+iris_size <- mutate(iris_data, size = case_when(Sepal.Length < 5 ~ "Small",
+                                                Sepal.Length >= 5 & Sepal.Length < 6.5 ~ "Medium",
+                                                Sepal.Length >= 6.5 ~ "Large"))
+
+iris_size
+```
+
+```{r}
+iris_rank <- select(iris, Petal.Length) %>%
+  arrange(Petal.Length) %>%
+  mutate(rank = min_rank(Petal.Length))
+
+iris_rank
+```
+
+```{r summarize}
+?summarize_all()
+
+species_m_sd <- iris_data %>%
+  group_by(Species) %>%
+  summarize(mean(Sepal.Length), mean(Sepal.Width), mean(Petal.Length), mean(Petal.Width), sd(Sepal.Length), sd(Sepal.Width), sd(Petal.Length), sd(Petal.Width))
+
+species_m_sd
+```
+
+
+Questions:
+Is belief in conspiracy theories related to IQ?
+
+What impacts do population control have on environmental pollution and or resource depletion?
+
+My friends who are all females between the ages of 21 and 22 thought the questions were interesting, one of the nurses mentioned that the population control study could be controversial. My parents thought it would be interesting to see the relationship between IQ and belief in conspiracy theories.
+
+Other people looking into the questions:
+https://www.inverse.com/article/38403-conspiracy-theory-intelligence-rationality
+
+https://www.science.org.au/curious/earth-environment/population-environment
+
+Professional feedback:
+The conspiracy theory question would not be challenging in terms of the survey instrument, but partitioning the population into varying IQ levels would be difficult. One might have to alter it to look at education level rather than IQ. If conducted that way it most likely could be done in 2 months.
+
+The second question most definitely could not be done in 2 months. You could look at existing data from say like China before and after they lifted population control laws. If done that way it may be able to be conducted in 2 months. Professional thinks this question is urgent because we are faced with environmental catastrophe. 
+
+
+
