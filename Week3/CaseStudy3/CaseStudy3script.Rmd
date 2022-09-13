@@ -1,0 +1,54 @@
+---
+title: "CaseStudy3RMD"
+author: "Mallory Dickerson"
+date: "9/8/2022"
+output: 
+  html_document:
+    keep_md: true
+---
+
+```{r loading libraries}
+library(tidyverse)
+library(knitr)
+library(downloader)
+library(gapminder)
+?gapminder
+```
+
+```{r removing Kuwait}
+without_kuwait <- filter(gapminder, country != "Kuwait")
+```
+
+
+
+```{r recreating the first graphic}
+library(ggplot2)
+ggplot(data = without_kuwait) +
+  geom_point(mapping = aes(x = lifeExp, y = gdpPercap, size = pop/100000, color = continent)) +
+  facet_wrap(~ year, nrow = 2) +
+  scale_y_continuous(trans = "sqrt") +
+  scale_y_continuous(name = "Life Expectancy") +
+  scale_x_continuous(name = "GDP Per Capita") +
+  theme_bw()
+```
+
+```{r}
+
+head(without_kuwait)
+
+means <- without_kuwait %>%
+  group_by(continent, year) %>%
+  summarize(wmean = weighted.mean(gdpPercap, pop, na.rm = TRUE), population = sum(pop, na.rm = TRUE))
+means
+```
+
+
+```{r recreating the second graphic}
+ggplot()+
+  geom_point(without_kuwait, mapping = aes(x = year, y = gdpPercap, color = continent)) +
+  geom_path(without_kuwait, mapping = aes(x = year, y = gdpPercap, color = continent)) +
+  geom_point(means, mapping = aes(x = year, y = wmean, size = population))+
+  facet_wrap(~ continent, nrow = 2)
+
+```
+
