@@ -1,0 +1,23 @@
+---
+title: "Task5"
+author: "Mallory Dickerson"
+date: "9/8/2022"
+output: 
+  html_document:
+    keep_md: true
+    code_folding: 'hide'
+---
+
+```{r}
+library(tidyverse)
+library(downloader)
+library(knitr)
+
+```
+
+
+```{r}
+
+Solodata <- read_csv("solo-artist-followers"))
+```
+

@@ -1,0 +1,103 @@
+---
+title: "Task5"
+author: "Mallory Dickerson"
+date: "9/8/2022"
+output: 
+  html_document:
+    keep_md: true
+    code_folding: 'hide'
+---
+
+```{r}
+library(tidyverse)
+library(downloader)
+library(knitr)
+```
+
+```{r reading in data}
+SoloData <- read_csv("solo-artist-followers.csv")
+BillboardData <- read_csv("billboard-hits.csv")
+```
+
+
+```{r commenting on the data}
+str(SoloData)
+str(BillboardData)
+```
+SoloData is a tibble of 139 rows and 5 columns. Each column variable is a character. BillboardData is a tibble of 456 rows and 5 columns. 'name', 'band', and 'title' are characters and peak_date is a Date datatype. 'peak_rank' is numeric. I believe it imported correctly.
+
+```{r removing singers who dont have at least 6 top 100 hits}
+head(BillboardData)
+head(SoloData)
+
+times_top_100 <- BillboardData %>%
+  filter(is.na(band) == FALSE) %>%
+  group_by(name, band) %>%
+  summarize(appearance = n()) %>%
+  filter(appearance >= 6, na.rm = TRUE)
+
+times_top_100
+
+colorline <- BillboardData %>%
+  filter(is.na(band) == FALSE) %>%
+  filter(name %in% times_top_100$name)
+
+colorline
+
+blackline <- BillboardData %>%
+  filter(is.na(band) == TRUE) %>%
+  filter(name %in% times_top_100$band) %>%
+  mutate(band = name)
+
+blackline
+
+
+```
+
+
+```{r}
+graphpop_bands <- ggplot() +
+  geom_point(colorline, mapping = aes(x = peak_date, y = peak_rank, color = name)) +
+  geom_line(colorline, mapping = aes(x = peak_date, y = peak_rank, color = name)) +
+  geom_point(blackline, mapping = aes(x = peak_date, y = peak_rank), color = "black") +
+  geom_line(blackline,  mapping = aes(x = peak_date, y = peak_rank), color = "black", linetype = "dotted") +
+  facet_wrap(~ band, scales = "free")
+
+
+graphpop_bands
+
+```
+Beyonce has consistently the most top 100 hits of any solo artists. However, Adventura appears to be a band who was most consistently in the top 100.
+
+
+
+
+
+Options for Data for Project:
+
+1. 
+https://github.com/fivethirtyeight/data/tree/master/study-drugs
+some info:
+Some of the datasets are confidential. The data includes information regarding using a variety of drugs as well as alcohol. It identifies first use as well as ongoing usage. 
+
+drugdata <- read_csv ("DS1 National Survey on Drug Use and Health, 2013.csv")
+
+the variables in this dataset are all numeric
+
+2.
+https://daac.ornl.gov/cgi-bin/dsviewer.pl?ds_id=1934
+some info:
+This data identifies over 70 variables related to CO2 exchange in the atmosphere. The data is related to the arctic with 244 observation sites related specifically to the tundra.
+
+arctic <- read_csv("Arctic_Boreal_CO2_Flux.csv")
+
+data types are either some sort of numeric data, or date, or character.
+
+3.
+https://academictorrents.com/details/e24e083cc337695bb84a2b68707695579c0ab4d8
+some info:
+Looks at a set of factors that measure and influence student learning. The data looks at 115 first year Engineering majors attending a university in Italy. (University of Genoa)
+
+Finalgrades <- read_csv(final_grades.xlsx)
+grades <- read_csv(intermediate_grades.xlsx)
+data types are either dates, characters, or numbers
