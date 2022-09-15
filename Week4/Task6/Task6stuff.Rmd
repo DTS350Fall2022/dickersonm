@@ -1,0 +1,96 @@
+---
+title: "Task6stuff"
+author: "Mallory Dickerson"
+date: "9/13/2022"
+output: 
+  html_document:
+    keep_md : TRUE
+---
+
+```{r loading packages}
+library(tidyverse)
+library(lubridate)
+?iris
+```
+
+
+```{r}
+mutate(iris, "label")
+
+largest_width <- iris %>%
+  group_by(Species) %>%
+  filter(row_number(desc(Petal.Width)) == 1) %>%
+  mutate(label  = "Largest Petal Width")
+largest_width
+
+largest_length <- iris %>%
+  group_by(Species) %>%
+  filter(row_number(desc(Petal.Length)) == 1) %>%
+  mutate(label = "Largest Petal Length")
+
+ggplot(iris, mapping = aes(x = Sepal.Width, 
+                                  y = Sepal.Length)) +
+  geom_point(aes(color = Species, shape = Species)) +
+  geom_text(aes(color = Species, label = label), data = largest_width, nudge_y = .2) +
+  geom_text(aes(color = Species, label = label), data = largest_length, nudge_y = -.2)+
+  geom_point(size = 3, shape = 1, color = "black", data = largest_width)+
+  geom_point(size = 3, shape = 1, color = "black", data = largest_length)+
+  labs(x = "Sepal Width (cm)",
+       y = "Sepal Length (cm)",
+       title = "Different Iris Species Have Different Sepal Sizes",
+       subtitle = "The Largest Petal Sizes for Each Species Do Not Correspond to The Largest Sepal Sizes")
+
+
+
+```
+
+```{r}
+download.file("https://github.com/fivethirtyeight/data/raw/master/scrabble-games/scrabble_games.csv", "Scrabble")
+ScrabbleData <- read_csv("Scrabble")
+```
+```{r}
+ScrabbleAll <- ScrabbleData %>%
+  select(date, winnerscore, loserscore) %>%
+  pivot_longer(c("winnerscore","loserscore"), names_to = "win-loss", values_to = "score") %>%
+  filter(score > 0) %>%
+  mutate(year = year(date),
+         week = week(date)
+  )
+```
+
+```{r}
+average_score <- ScrabbleAll %>%
+  filter(year == 2005 | year == 2006) %>%
+  group_by(year, week) %>%
+  summarize(avgscore = mean(score), date = max(date))
+
+average_score
+```
+
+```{r}
+before_avg <- average_score %>%
+  filter(year == 2005)
+
+before_avg
+
+after_avg <- average_score %>%
+  filter(year == 2006)
+
+after_avg
+```
+
+```{r}
+graph2 <- ggplot(data = average_score, mapping = aes(x = date, y = avgscore)) +
+  geom_point() +
+  geom_smooth(data = before_avg, method = "lm", color = "orange") +
+  annotate("text", x = as.Date("2005-07-05"), y = 390, label = "Trend Before", size = 2, color = "orange") +
+  geom_smooth(data = after_avg, method = "lm", color = "blue") +
+  annotate("text", x = as.Date("2006-07-05"), y = 390, label = "Trend After", size = 2, color = "blue") +
+  geom_vline(xintercept = as.Date("2006-01-01"), linetype = "dotted") +
+  labs(x = "", y = "Average Score", title = "Scrabble scores in the age of 'QI' and 'ZA'", subtitle = "Weekly average scores before and after the addition of around 11,000 words to the Scrabble dictionary", caption = "Source: FiveThirtyEight") +
+  annotate("text", x = as.Date("2006-01-01"), y = 390, label = "Dictionary\nUpdated", size = 2)
+  
+graph2
+  
+```
+
