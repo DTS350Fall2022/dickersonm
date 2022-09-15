@@ -1,0 +1,66 @@
+---
+title: "Task7"
+author: "Mallory Dickerson"
+date: "9/15/2022"
+output: 
+  html_document:
+    keep_md: true
+---
+library(tidyverse)
+?mpg
+fct
+```{r fct collapse}
+library(tidyverse)
+download.file("https://raw.githubusercontent.com/hadley/r4ds/master/data/heights.csv", "HeightData")
+
+height_data <- read_csv("HeightData")
+head(height_data)
+
+
+
+HeightEd <- height_data %>%
+  mutate(ed = fct_collapse(as.factor(ed),
+                           primary = c("3","4","5","6"),
+                           secondary = c("7","8","9","10","11"),
+                           highschoolgrad = ("12"),
+                           associate = c("13","14","15"),
+                           bachelors = ("16"),
+                           mastorsdoctorate = c("17","18")
+                           ))
+  
+HeightEd                           
+```
+```{r graphic for education and race}
+library(ggplot2)
+ggplot(data = HeightEd) +
+  geom_bar(mapping = aes(x = ed, fill = race), position = "dodge") +
+  labs(y = "Amount of People",
+       x = "Education level",
+       title = "Amount of people at Different Levels of Education by Race")
+
+
+```
+```{r sex vs education}
+ggplot(data = HeightEd) +
+  geom_bar(mapping = aes(x = ed, fill = sex), position = "dodge") +
+  labs(y = "Amount of People",
+       x = "Education Level",
+       title = "Amount of people at Different Levels of Education by Sex")
+```
+
+```{r}
+min(HeightEd$age, na.rm = TRUE)
+
+
+
+Earn_vs_Edu <- ggplot(data = HeightEd) +
+  geom_boxplot(aes(x = ed, y = earn, fill = sex))+
+  labs(x = "Education Level",
+       y = "Income",
+       title = "Levels of Education Completed and The Impact on Income For Males and Females") +
+  annotate("text", x = "associate", y = 150000, label = "Quite a Few Outlier Data Points", size = 3.5)
+               
+Earn_vs_Edu
+
+```
+I learned that in this data set, females make less money than males even when they have the same education level completed. It is also shows that there are quite a few outlier data points. I also discovered the boxplot is a good visualization tool when dealing with data that falls into ranges rather than as discrete data points. 
