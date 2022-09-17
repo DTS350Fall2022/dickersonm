@@ -1,0 +1,62 @@
+---
+title: "CaseStudy4"
+author: "Mallory Dickerson"
+date: "9/15/2022"
+output: 
+  html_document:
+    keep_md: true
+    code_folding: 'hide'
+---
+
+```{r packages}
+library(tidyverse)
+library(nycflights13)
+```
+
+```{r question 2}
+?flights
+DeltaAir <- filter(flights, carrier == "DL")
+head(DeltaAir)
+
+locations <- DeltaAir %>%
+  group_by(origin) %>%
+  summarize(avg_arr_delay = mean(arr_delay, na.rm = TRUE))
+locations
+
+```
+
+```{r counting Delta flights by origin}
+by_arr_delay <- group_by(DeltaAir, origin)
+DeltaCount <- summarize(by_arr_delay,
+            count = n(),
+            )
+DeltaCount
+
+```
+JFK will minimize your chances of arriving late. On average flights arrive about 2 minutes ahead of 
+their scheduled time coming from JFK. flights leaving LGA will on average arrive about 4 minutes late to their destination. EWR comes in last, on average, with an arrival delay of 8 minutes. All flights in this data frame are Delta. By further analyzing the data, it can be seen that the number of flights originating from JFK and LGA differs by about 3 thousand flights. Thus one can perhaps claim that JFK will be the better airport for arriving at your destination on time. However, it is difficult to conclude when observing the number of flights that EWR will on average have more late arrivals because the number of flights is much fewer. So, it a particular route coming out of EWR has a lot of flights and is always very late it could skew the data and make it seem that EWR would be less likely to get you there on time. The graph shows that without looking at the outliers, there is not much variation between the three origin airports in relation to arrival delay. But, it does still show that JFK will be the better airport for arriving at your destination on time.
+
+```{r plot 1}
+plot1 <- ggplot() +
+  geom_boxplot(data = DeltaAir, mapping = aes(x = origin, y = arr_delay, color = arr_delay)) +
+  coord_cartesian(ylim = c(-5,200))
+plot1
+```
+
+
+```{r question 3}
+dest_avgs <- flights %>%
+  group_by(dest) %>%
+  summarize(avg_delay = mean(arr_delay, na.rm = TRUE))
+
+dest_avgs
+
+worst <- dest_avgs %>%
+  filter(avg_delay >= 20)
+
+ggplot()+
+  geom_col(data = worst, aes(x = fct_reorder(dest, avg_delay), y = avg_delay))
+
+
+```
+This graph shows that the worst destination airport for arriving on time, on average, is CAE. With an average arrival delay of over 40 minutes. The graph is filtered to show only destinations with 20 minutes or more delay because of the large amount of destinations. 
