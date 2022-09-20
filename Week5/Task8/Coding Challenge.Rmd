@@ -1,0 +1,80 @@
+---
+title: "Coding Challenge"
+author: "Mallory Dickerson"
+date: "9/20/2022"
+output: 
+html_document:
+  keep_md: true
+---
+
+```{r reading in data and loading packages}
+library(tidyverse)
+download.file("https://raw.githubusercontent.com/fivethirtyeight/data/master/candy-power-ranking/candy-data.csv", "Candy")
+CandyData <- read_csv("Candy")
+```
+```{r bargraph}
+head(CandyData)
+
+sixty_five <- CandyData %>%
+  filter(winpercent >= 65)
+
+plot1 <- ggplot()+
+  geom_col(data = sixty_five, aes(x = winpercent, y = fct_reorder(competitorname, winpercent), fill = "orange")) +
+   scale_color_brewer(palette = "Oranges") +
+  labs(x = "Win Percentage (%)",
+       y = " ",
+       title = "How often did a fun-sized candy of a given type win its matchups 
+against the rest of the field?") +
+  theme(legend.position = "none") +
+  annotate("text", x = 68, y = "Nestle Crunch", label = "66", size = 3.5)+
+  annotate("text", x = 68, y = "Rolo", label = "66", size = 3.5) +
+  annotate("text", x = 69, y = "M&MÕs", label = "67", size = 3.5) +
+  annotate("text", x = 69, y = "100 Grand", label = "67", size = 3.5) +
+  annotate("text", x = 69, y = "Starburst", label = "67", size = 3.5) +
+  annotate("text", x = 70, y = "3 Musketeers", label = "68", size = 3.5) +
+  annotate("text", x = 71, y = "Peanut M&Ms", label = "69", size = 3.5) +
+  annotate("text", x = 73, y = "Nestle Butterfinger", label = "71", size = 3.5) +
+  annotate("text", x = 73, y = "Peanut butter M&MÕs", label = "71", size = 3.5) +
+  annotate("text", x = 75, y = "ReeseÕs stuffed with pieces", label = "73", size = 3.5) +
+  annotate("text", x = 75, y = "Milky Way", label = "73", size = 3.5) +
+  annotate("text", x = 75, y = "ReeseÕs pieces", label = "73", size = 3.5) +
+  annotate("text", x = 78, y = "Snickers", label = "77", size = 3.5) +
+  annotate("text", x = 78, y = "Kit Kat", label = "77", size = 3.5) +
+  annotate("text", x = 84, y = "Twix", label = "82", size = 3.5) +
+  annotate("text", x = 84, y = "ReeseÕs Miniatures", label = "82", size = 3.5) +
+  annotate("text", x = 86, y = "ReeseÕs Peanut Butter cup", label = "84", size = 3.5)
+
+plot1  
+```
+
+```{r running code}
+winpercent2 <- CandyData %>%
+  select(competitorname, winpercent)
+
+candyLonger <- CandyData %>%
+  select(competitorname:pluribus) %>%
+  pivot_longer(!competitorname, names_to = 'description', values_to = 'yesno') %>%
+  filter(yesno == 1) %>%
+  select(competitorname, description) %>%
+  left_join(winpercent2)
+
+head(candyLonger)
+```
+
+```{r boxplot}
+plot2 <- ggplot()+
+  geom_boxplot(data = candyLonger, aes(x = fct_reorder(description, winpercent), y = winpercent, fill = description)) +
+  scale_color_brewer(palette = "Oranges") +
+  coord_flip() +
+  labs(y = "Win Percentage",
+       x = " ",
+       title = "The Best Candy Types")+
+  theme(legend.position = "none")
+plot2
+```
+```{r saving plots}
+ggsave("plot1.png")
+
+ggsave("plot2.png")
+```
+
