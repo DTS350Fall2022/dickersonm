@@ -1,0 +1,108 @@
+---
+title: "CaseStudy5"
+author: "Mallory Dickerson"
+date: "9/23/2022"
+output: 
+  html_document:
+    keep_md: TRUE
+---
+SUMMARY:
+Gun deaths in the United States constitute a major cause for concern, affecting over 40,000 people annually. While all the deaths result from guns, the parts of the population most affected and the causes are various. The leading cause of death by guns is suicide, making up 2/3s of gun deaths annually. And more than85% of those deaths are male victims. Other categories of gun fatalities include women in domestic violence, mass shootings, and homicides. Given the differences in gun violence victims, it is difficult to suggest a single solution to attack the problem. 
+
+```{r}
+library(tidyverse)
+download.file("https://raw.githubusercontent.com/fivethirtyeight/guns-data/master/full_data.csv", "GunDeaths")
+
+GunDeaths <- read_csv("GunDeaths")
+head(GunDeaths)
+```
+```{r bar graph}
+age_grouping <- GunDeaths %>%
+  filter(intent != " ", age != " ") %>%
+  mutate(agegroup = case_when(
+    age < 15 ~ "under 15",
+    age < 35 ~ "15-34",
+    age < 65 ~ "35-64",
+    TRUE ~ "65+"
+  ))
+age_grouping
+
+ggplot() +
+  geom_bar(data = age_grouping, aes(x = agegroup, fill = sex)) +
+  facet_wrap(~intent, scales = "free") +
+  labs(
+    x = "Age Group",
+    y = "Amount",
+    title = "Age Group and Sex and Their Affect on Gun Related Deaths"
+  )
+
+
+```
+This graph demonstrates that men are more subject to be victims of gun violence. At every age group and 
+different intent men are far more likely to be killed by gun violence. Suicide and homicide are 
+particularly striking because of the sheer amount of fatalities, with suicide as the 
+most deadly form of gun violence for men.
+```{r density graph}
+ggplot() +
+  geom_density(data = GunDeaths, aes(x = age, fill = intent), alpha = .5, position = 'fill', adjust = 1.5) +
+  facet_wrap(~sex) +
+  labs(
+    x = "Age",
+    y = "Density",
+    title = "Density of Gun Deaths by Gender"
+  )
+              
+```
+This graph shows gun deaths for different ages and the intent behind the death. It demonstrates that as male 
+age increases so does suicide rate. For women, there seems to be a peak age in suicide right around 45 to about 75,
+and it is less dense than the male suicide density. Which seems to be true with what we know about female suicide,
+meaning typically women opt for pill overdose or other less violent means of death. 
+
+
+
+
+
+```{r first plot}
+deathseasons <- GunDeaths %>%
+  mutate(month = as.factor(month))
+
+GunDeaths$month <- as.integer(GunDeaths$month)
+
+
+seasons <- GunDeaths %>%
+  mutate(season = 
+            case_when(
+            month >= 1 & month <= 2 ~ "Winter",
+            month == 12 ~ "Winter",
+            month >= 4 & month <= 6 ~ "Spring",
+            month >= 5 & month <= 8 ~ "Summer",
+            month >= 9 & month <= 11 ~ "Fall",
+            ))
+nonulls <- seasons %>%
+  filter(season != "")
+
+ggplot() +
+  geom_bar(data = nonulls, aes(x = month, fill = season)) +
+  facet_wrap(~intent, scales = "free") +
+  labs(x = "Month",
+       y = "Amount",
+       title = "Amount of Gun Deaths by Season")
+
+```
+The graphs reveal that there is not a significant difference in suicide gun fatalities when broken down by season.
+So, we would need to tell the customer there is no real need to develop different approaches to strategies in gun
+violence based on season. 
+
+```{r}
+ggplot() +
+  geom_bar(data = nonulls, aes(x = month, fill = sex)) +
+  facet_wrap(~intent, scales = "free") +
+  labs(x = "Month",
+       y = "Amount",
+       title = "Amount of Gun Deaths by Season Split by Gender")
+```
+
+Taking a closer look to examine how men and women are specifically affected in different seasons by suicide gun
+violence, we can see there is still not a significant difference. However, we do still see a distinction. The
+client should focus specifically on male gun related suicide prevention commercials throughout the year. 
+
