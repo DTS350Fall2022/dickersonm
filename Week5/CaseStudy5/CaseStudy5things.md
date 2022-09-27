@@ -175,7 +175,7 @@ nonulls <- seasons %>%
   filter(season != "")
 
 ggplot() +
-  geom_bar(data = nonulls, aes(x = month, fill = season)) +
+  geom_bar(data = nonulls, aes(x = season, fill = season)) +
   facet_wrap(~intent, scales = "free") +
   labs(x = "Month",
        y = "Amount",
@@ -183,14 +183,13 @@ ggplot() +
 ```
 
 ![](CaseStudy5things_files/figure-html/first plot-1.png)<!-- -->
-The graphs reveal that there is not a significant difference in suicide gun fatalities when broken down by season.
-So, we would need to tell the customer there is no real need to develop different approaches to strategies in gun
-violence based on season. 
+The graphs reveal that there is a significant difference in suicide gun fatalities when broken down by season.
+So, we see that suicide is actually higher in the fall and spring. Our client might want to make commercials during that time that are for suicide prevention.
 
 
 ```r
 ggplot() +
-  geom_bar(data = nonulls, aes(x = month, fill = sex)) +
+  geom_bar(data = nonulls, aes(x = season, fill = sex)) +
   facet_wrap(~intent, scales = "free") +
   labs(x = "Month",
        y = "Amount",
@@ -200,6 +199,6 @@ ggplot() +
 ![](CaseStudy5things_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
 
 Taking a closer look to examine how men and women are specifically affected in different seasons by suicide gun
-violence, we can see there is still not a significant difference. However, we do still see a distinction. The
-client should focus specifically on male gun related suicide prevention commercials throughout the year. 
+violence, we can see similar results from what we saw in our previous graphs. However, we do still see a distinction. The
+client should focus specifically on male gun related suicide prevention commercials in fall and spring. 
 
