@@ -6,9 +6,11 @@ output:
   html_document:
     keep_md: true
 ---
-library(tidyverse)
-?mpg
-fct
+
+
+
+
+
 
 ```r
 library(tidyverse)
@@ -101,16 +103,7 @@ HeightEd
 ## # ... with 1,182 more rows
 ```
 
-```r
-library(ggplot2)
-ggplot(data = HeightEd) +
-  geom_bar(mapping = aes(x = ed, fill = race), position = "dodge") +
-  labs(y = "Amount of People",
-       x = "Education level",
-       title = "Amount of people at Different Levels of Education by Race")
-```
 
-![](Task7stuff_files/figure-html/graphic for education and race-1.png)<!-- -->
 
 ```r
 ggplot(data = HeightEd) +
@@ -120,7 +113,20 @@ ggplot(data = HeightEd) +
        title = "Amount of people at Different Levels of Education by Sex")
 ```
 
-![](Task7stuff_files/figure-html/sex vs education-1.png)<!-- -->
+![](Task7stuff_files/figure-html/sexVSedu-1.png)<!-- -->
+
+
+```r
+library(ggplot2)
+ggplot(data = HeightEd) +
+  geom_bar(mapping = aes(x = ed, fill = race), position = "dodge") +
+  labs(y = "Amount of People",
+       x = "Education level",
+       title = "Amount of people at Different Levels of Education by Race")
+```
+
+![](Task7stuff_files/figure-html/eduVSrace-1.png)<!-- -->
+
 
 
 ```r
@@ -142,5 +148,5 @@ Earn_vs_Edu <- ggplot(data = HeightEd) +
 Earn_vs_Edu
 ```
 
-![](Task7stuff_files/figure-html/unnamed-chunk-1-1.png)<!-- -->
+![](Task7stuff_files/figure-html/earnVSedu-1.png)<!-- -->
 I learned that in this data set, females make less money than males even when they have the same education level completed. It is also shows that there are quite a few outlier data points. I also discovered the boxplot is a good visualization tool when dealing with data that falls into ranges rather than as discrete data points. 

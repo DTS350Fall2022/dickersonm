@@ -6,10 +6,14 @@ output:
   html_document:
     keep_md: true
 ---
-library(tidyverse)
-?mpg
-fct
-```{r fct collapse}
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+
+```{r}
 library(tidyverse)
 download.file("https://raw.githubusercontent.com/hadley/r4ds/master/data/heights.csv", "HeightData")
 
@@ -30,17 +34,9 @@ HeightEd <- height_data %>%
   
 HeightEd                           
 ```
-```{r graphic for education and race}
-library(ggplot2)
-ggplot(data = HeightEd) +
-  geom_bar(mapping = aes(x = ed, fill = race), position = "dodge") +
-  labs(y = "Amount of People",
-       x = "Education level",
-       title = "Amount of people at Different Levels of Education by Race")
 
 
-```
-```{r sex vs education}
+```{r sexVSedu}
 ggplot(data = HeightEd) +
   geom_bar(mapping = aes(x = ed, fill = sex), position = "dodge") +
   labs(y = "Amount of People",
@@ -48,7 +44,17 @@ ggplot(data = HeightEd) +
        title = "Amount of people at Different Levels of Education by Sex")
 ```
 
-```{r}
+```{r eduVSrace}
+library(ggplot2)
+ggplot(data = HeightEd) +
+  geom_bar(mapping = aes(x = ed, fill = race), position = "dodge") +
+  labs(y = "Amount of People",
+       x = "Education level",
+       title = "Amount of people at Different Levels of Education by Race")
+```
+
+
+```{r earnVSedu}
 min(HeightEd$age, na.rm = TRUE)
 
 
