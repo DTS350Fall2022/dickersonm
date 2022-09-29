@@ -1,0 +1,41 @@
+---
+title: "Task10"
+author: "Mallory Dickerson"
+date: "9/27/2022"
+output: 
+  html_document:
+    keep_md: TRUE
+---
+
+```{r}
+library(tidyverse)
+library(knitr)
+
+download.file("https://raw.githubusercontent.com/martinerin/myrepo/master/financing_healthcare.csv", "HealthCareData")
+
+HealthCare <- read_csv("HealthCareData")
+head(HealthCare)
+```
+
+```{r removing NAs and filtering data}
+droppedNA <- HealthCare %>%
+  filter(country == ("United States") | country == ("Canada") | country == ("Egypt") | country == ("Kenya") | country == ("Afghanistan") | country == ("India") | country == ("China") | country == ("France") | country == ("Spain") | country == ("Australia") | country == ("New Zealand")) %>%
+  drop_na(gdp, child_mort, year)
+
+tail(droppedNA)
+```
+
+
+```{r echo = FALSE}
+ggplot() +
+  geom_point(data = droppedNA, aes(x = gdp, y = child_mort, color = country)) +
+  facet_wrap(~continent, scales = 'free') +
+  labs(
+    x = "GDP/10000",
+    y = "Child Mortality Rate",
+    title = "Demonstrating the Effect of GDP on Child Mortality"
+  ) +
+  theme_bw()
+```
+
+This visualization demonstrates that as GDP increases child mortality decreases. The United States has the largest GDP of any of the countries displayed and yet our child mortality is higher than other comprable countries. For instance, France has a GDP that is 14,000 less than the U.S. and yet their child mortality rate is 3 less than the U.S. 
