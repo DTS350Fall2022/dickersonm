@@ -8,6 +8,9 @@ output:
 ---
 
 
+
+
+
 ```r
 library(tidyverse)
 ```
@@ -82,7 +85,7 @@ ggplot(data = without_kuwait) +
 ## replace the existing scale.
 ```
 
-![](CaseStudy3script_files/figure-html/recreating the first graphic-1.png)<!-- -->
+![](CaseStudy3script_files/figure-html/graph1-1.png)<!-- -->
 
 
 ```r
@@ -143,5 +146,5 @@ ggplot()+
   facet_wrap(~ continent, nrow = 2)
 ```
 
-![](CaseStudy3script_files/figure-html/recreating the second graphic-1.png)<!-- -->
+![](CaseStudy3script_files/figure-html/graph2-1.png)<!-- -->
 
