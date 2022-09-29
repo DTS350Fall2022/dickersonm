@@ -7,14 +7,14 @@ output:
     keep_md : TRUE
 ---
 
-```{r loading packages}
+```{r message = FALSE}
 library(tidyverse)
 library(lubridate)
 ?iris
 ```
 
 
-```{r}
+```{r irisplot1}
 mutate(iris, "label")
 
 largest_width <- iris %>%
@@ -44,7 +44,7 @@ ggplot(iris, mapping = aes(x = Sepal.Width,
 
 ```
 
-```{r}
+```{r message = FALSE}
 download.file("https://github.com/fivethirtyeight/data/raw/master/scrabble-games/scrabble_games.csv", "Scrabble")
 ScrabbleData <- read_csv("Scrabble")
 ```
@@ -79,7 +79,7 @@ after_avg <- average_score %>%
 after_avg
 ```
 
-```{r}
+```{r irisplot2}
 graph2 <- ggplot(data = average_score, mapping = aes(x = date, y = avgscore)) +
   geom_point() +
   geom_smooth(data = before_avg, method = "lm", color = "orange") +

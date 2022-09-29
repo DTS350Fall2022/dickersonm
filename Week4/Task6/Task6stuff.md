@@ -10,50 +10,8 @@ output:
 
 ```r
 library(tidyverse)
-```
-
-```
-## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
-```
-
-```
-## v ggplot2 3.3.5     v purrr   0.3.4
-## v tibble  3.1.6     v dplyr   1.0.7
-## v tidyr   1.1.4     v stringr 1.4.0
-## v readr   2.1.1     v forcats 0.5.1
-```
-
-```
-## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()
-```
-
-```r
 library(lubridate)
-```
-
-```
-## 
-## Attaching package: 'lubridate'
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     date, intersect, setdiff, union
-```
-
-```r
 ?iris
-```
-
-```
-## starting httpd help server ...
-```
-
-```
-##  done
 ```
 
 
@@ -253,31 +211,12 @@ ggplot(iris, mapping = aes(x = Sepal.Width,
        subtitle = "The Largest Petal Sizes for Each Species Do Not Correspond to The Largest Sepal Sizes")
 ```
 
-![](Task6stuff_files/figure-html/unnamed-chunk-1-1.png)<!-- -->
+![](Task6stuff_files/figure-html/irisplot1-1.png)<!-- -->
 
 
 ```r
 download.file("https://github.com/fivethirtyeight/data/raw/master/scrabble-games/scrabble_games.csv", "Scrabble")
 ScrabbleData <- read_csv("Scrabble")
-```
-
-```
-## Rows: 1542642 Columns: 19
-```
-
-```
-## -- Column specification --------------------------------------------------------
-## Delimiter: ","
-## chr   (2): winnername, losername
-## dbl  (14): gameid, tourneyid, winnerid, winnerscore, winneroldrating, winner...
-## lgl   (2): tie, lexicon
-## date  (1): date
-```
-
-```
-## 
-## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ```
 
 ```r
@@ -395,5 +334,5 @@ graph2
 ## `geom_smooth()` using formula 'y ~ x'
 ```
 
-![](Task6stuff_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+![](Task6stuff_files/figure-html/irisplot2-1.png)<!-- -->
 
