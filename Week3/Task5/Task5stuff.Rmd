@@ -8,13 +8,13 @@ output:
     code_folding: 'hide'
 ---
 
-```{r}
+```{r message = FALSE}
 library(tidyverse)
 library(downloader)
 library(knitr)
 ```
 
-```{r reading in data}
+```{r message = FALSE}
 SoloData <- read_csv("solo-artist-followers.csv")
 BillboardData <- read_csv("billboard-hits.csv")
 ```
@@ -55,7 +55,7 @@ blackline
 ```
 
 
-```{r}
+```{r popBandsGraph}
 graphpop_bands <- ggplot() +
   geom_point(colorline, mapping = aes(x = peak_date, y = peak_rank, color = name)) +
   geom_line(colorline, mapping = aes(x = peak_date, y = peak_rank, color = name)) +
