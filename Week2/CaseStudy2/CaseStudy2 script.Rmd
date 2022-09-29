@@ -8,14 +8,14 @@ output:
 
 ---
 
-```{r}
+```{r setup, include=FALSE}
 library(tidyverse)
 
 urlfile="https://github.com/WJC-Data-Science/DTS350/raw/master/coral.csv"
 mydata <- read_csv(url(urlfile))
 ```
 
-```{r}
+```{r plot1}
 head(mydata)
 tail(mydata)
 str(mydata)
@@ -32,7 +32,7 @@ ggplot(mydata, aes(x = Year, y = Value, color = Event))+
 ```
 
 
-```{r}
+```{r plot2}
 ggplot()+
   geom_col(mydata, mapping = aes(x = Year, y = Value, fill = Event))+
   facet_wrap(~Entity, ncol = 2)+
@@ -42,7 +42,7 @@ ggplot()+
 The data overall does not show that it is becoming more frequent, but this is undoubtedly because once the coral
 is bleached it would not be included in another bleaching event. The data does show perhaps that bleaching events became more frequent up until 1998 in most areas of the world. After severe bleaching events the number of events were reduced.
 
-```{r}
+```{r plot3}
 ggplot(mydata, mapping = aes(x = Year, y = Value)) +
   geom_point(aes(col = Event))+
   facet_wrap(~Entity, ncol = 2)+

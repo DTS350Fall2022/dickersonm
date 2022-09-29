@@ -9,48 +9,6 @@ output:
 ---
 
 
-```r
-library(tidyverse)
-```
-
-```
-## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
-```
-
-```
-## v ggplot2 3.3.5     v purrr   0.3.4
-## v tibble  3.1.6     v dplyr   1.0.7
-## v tidyr   1.1.4     v stringr 1.4.0
-## v readr   2.1.1     v forcats 0.5.1
-```
-
-```
-## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()
-```
-
-```r
-urlfile="https://github.com/WJC-Data-Science/DTS350/raw/master/coral.csv"
-mydata <- read_csv(url(urlfile))
-```
-
-```
-## Rows: 370 Columns: 5
-```
-
-```
-## -- Column specification --------------------------------------------------------
-## Delimiter: ","
-## chr (3): Entity, Code, Event
-## dbl (2): Year, Value
-```
-
-```
-## 
-## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
-```
 
 
 ```r
@@ -114,7 +72,7 @@ ggplot(mydata, mapping = aes(x = Year, y = Value)) +
   scale_fill_manual(values = c("Blue", "Red"))
 ```
 
-![](CaseStudy2-script_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+![](CaseStudy2-script_files/figure-html/plot1-1.png)<!-- -->
 
 ```r
 ggplot(mydata, aes(x = Year, y = Value, color = Event))+
@@ -122,7 +80,7 @@ ggplot(mydata, aes(x = Year, y = Value, color = Event))+
   scale_x_continuous(breaks = seq(1980, 2016, by = 3))
 ```
 
-![](CaseStudy2-script_files/figure-html/unnamed-chunk-2-2.png)<!-- -->
+![](CaseStudy2-script_files/figure-html/plot1-2.png)<!-- -->
 
 
 
@@ -133,7 +91,7 @@ ggplot()+
   scale_fill_manual(values = c("Blue", "Red"))
 ```
 
-![](CaseStudy2-script_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+![](CaseStudy2-script_files/figure-html/plot2-1.png)<!-- -->
 
 The data overall does not show that it is becoming more frequent, but this is undoubtedly because once the coral
 is bleached it would not be included in another bleaching event. The data does show perhaps that bleaching events became more frequent up until 1998 in most areas of the world. After severe bleaching events the number of events were reduced.
@@ -146,7 +104,7 @@ ggplot(mydata, mapping = aes(x = Year, y = Value)) +
   scale_fill_manual(values = c("Blue", "Red"))
 ```
 
-![](CaseStudy2-script_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](CaseStudy2-script_files/figure-html/plot3-1.png)<!-- -->
 The scatterplot demonstrates that the number of coral bleaching events fell into higher ranges as time went on,
 peaking in 1998 in most areas of the world and again in 2016. However, the peaks seem to show a decline in bleaching events. The scatterplot also emphasizes that certain parts of the world experience a higher number of bleaching events.
 
