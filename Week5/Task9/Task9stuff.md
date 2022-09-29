@@ -8,6 +8,8 @@ output:
 ---
 
 
+
+
 ```r
 library(tidyverse)
 ```
@@ -84,7 +86,7 @@ ggplot() +
   theme_bw()
 ```
 
-![](Task9stuff_files/figure-html/Code for first graphic-1.png)<!-- -->
+![](Task9stuff_files/figure-html/graph1-1.png)<!-- -->
 This first graph simply shows how the two different methods of delivering a dose effect the average length of odontoblasts, without taking into account the different dose amounts. I chose geom_col because we are just comparing two different numbers that have been summarized. This graph demonstrates that the OJ supplement is more effective, on average, at aiding tooth growth in guinea pigs. 
 
 ```r
@@ -99,7 +101,7 @@ ggplot() +
   theme_bw()
 ```
 
-![](Task9stuff_files/figure-html/code for second graphic-1.png)<!-- -->
+![](Task9stuff_files/figure-html/graph2-1.png)<!-- -->
 
 I used the boxplot because I had a parallel situation and I wanted to show, in parallel, the comparsion of the two different delivery methods. The graph demonstrates that OJ tends to be more effective for the .5 and 1 mg doses, which is easily seen in the comparison graphs. The 2 mg dose seemed to have similar effects on length of odontoblasts whether it was delivered in OJ or VC. 
 
@@ -133,7 +135,7 @@ ggplot() +
   theme_bw()
 ```
 
-![](Task9stuff_files/figure-html/unnamed-chunk-1-1.png)<!-- -->
+![](Task9stuff_files/figure-html/mpgGraph1-1.png)<!-- -->
 I used a scatter plot because you are able to retain and show that different car models have varying miles per gallon for 4,6, and 8 cylinder engines, but that all car models showed decreasing miles per gallon with increasing cylinders in their engine.
 
 
@@ -150,6 +152,6 @@ ggplot() +
        color = "Type of Transmission")
 ```
 
-![](Task9stuff_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+![](Task9stuff_files/figure-html/mpgGraph2-1.png)<!-- -->
 
 I used a scatter plot to get an idea and show what the slope would be if there was a line through the points. It demonstrates clearly that as horsepower increases, miles per gallon decreases. Strikingly, the use of a faceted graph shows that manual transmissions get better gas mileage than their counterparts automatic transmissions. This is interesting since there are almost no cars sold these days with manual transmission because it is much easier to drive an automatic. But we are apparently paying for more gas by driving automatic transmission cars.

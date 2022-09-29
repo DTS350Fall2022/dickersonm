@@ -3,9 +3,13 @@ title: "Task9"
 author: "Mallory Dickerson"
 date: "9/22/2022"
 output: 
-html_document:
-  keep_md: TRUE
+  html_document:
+    keep_md: TRUE
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
 ```{r loading packages and ToothGrowth data}
 library(tidyverse)
@@ -13,7 +17,7 @@ library(tidyverse)
 head(ToothGrowth)
 ```
 
-```{r Code for first graphic}
+```{r graph1}
 avg_len <- ToothGrowth %>%
   group_by(supp) %>%
   summarize(avg_tooth_len = mean(len, na.rm = TRUE))
@@ -31,7 +35,7 @@ ggplot() +
   theme_bw()
 ```
 This first graph simply shows how the two different methods of delivering a dose effect the average length of odontoblasts, without taking into account the different dose amounts. I chose geom_col because we are just comparing two different numbers that have been summarized. This graph demonstrates that the OJ supplement is more effective, on average, at aiding tooth growth in guinea pigs. 
-```{r code for second graphic}
+```{r graph2}
 ggplot() +
   geom_boxplot(data = ToothGrowth, aes(x = dose, y = len, group = dose, fill = as.factor(dose))) +
   facet_wrap(~ supp) +
@@ -51,7 +55,7 @@ I used the boxplot because I had a parallel situation and I wanted to show, in p
 head(mtcars)
 ```
 
-```{r}
+```{r mpgGraph1}
 ggplot() +
   geom_point(data = mtcars, aes(x = as.factor(cyl), y = mpg, color = as.factor(cyl))) +
   labs(x = "Number of Cylinders",
@@ -65,7 +69,7 @@ ggplot() +
 I used a scatter plot because you are able to retain and show that different car models have varying miles per gallon for 4,6, and 8 cylinder engines, but that all car models showed decreasing miles per gallon with increasing cylinders in their engine.
 
 
-```{r}
+```{r mpgGraph2}
 ggplot() +
   geom_point(data = mtcars, aes(x = hp, y = mpg, color = as.factor(am))) +
   facet_wrap(~ am) +
