@@ -7,7 +7,7 @@ output:
     keep_md: TRUE
 ---
 
-```{r}
+```{r setup, include=FALSE}
 library(tidyverse)
 library(knitr)
 
@@ -26,7 +26,7 @@ tail(droppedNA)
 ```
 
 
-```{r echo = FALSE}
+```{r CMgraph}
 ggplot() +
   geom_point(data = droppedNA, aes(x = gdp, y = child_mort, color = country)) +
   facet_wrap(~continent, scales = 'free') +
