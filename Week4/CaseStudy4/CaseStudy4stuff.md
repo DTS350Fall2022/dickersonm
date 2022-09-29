@@ -9,6 +9,9 @@ output:
 ---
 
 
+
+
+
 ```r
 library(tidyverse)
 ```
@@ -115,7 +118,7 @@ plot1
 ## Warning: Removed 452 rows containing non-finite values (stat_boxplot).
 ```
 
-![](CaseStudy4stuff_files/figure-html/plot 1-1.png)<!-- -->
+![](CaseStudy4stuff_files/figure-html/plot1-1.png)<!-- -->
 
 
 
@@ -152,5 +155,5 @@ ggplot()+
   geom_col(data = worst, aes(x = fct_reorder(dest, avg_delay), y = avg_delay))
 ```
 
-![](CaseStudy4stuff_files/figure-html/question 3-1.png)<!-- -->
+![](CaseStudy4stuff_files/figure-html/plot2-1.png)<!-- -->
 This graph shows that the worst destination airport for arriving on time, on average, is CAE. With an average arrival delay of over 40 minutes. The graph is filtered to show only destinations with 20 minutes or more delay because of the large amount of destinations. 

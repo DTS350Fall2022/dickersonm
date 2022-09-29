@@ -7,6 +7,11 @@ output:
     keep_md: true
     code_folding: 'hide'
 ---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
 
 ```{r packages}
 library(tidyverse)
@@ -36,7 +41,7 @@ DeltaCount
 JFK will minimize your chances of arriving late. On average flights arrive about 2 minutes ahead of 
 their scheduled time coming from JFK. flights leaving LGA will on average arrive about 4 minutes late to their destination. EWR comes in last, on average, with an arrival delay of 8 minutes. All flights in this data frame are Delta. By further analyzing the data, it can be seen that the number of flights originating from JFK and LGA differs by about 3 thousand flights. Thus one can perhaps claim that JFK will be the better airport for arriving at your destination on time. However, it is difficult to conclude when observing the number of flights that EWR will on average have more late arrivals because the number of flights is much fewer. So, it a particular route coming out of EWR has a lot of flights and is always very late it could skew the data and make it seem that EWR would be less likely to get you there on time. The graph shows that without looking at the outliers, there is not much variation between the three origin airports in relation to arrival delay. But, it does still show that JFK will be the better airport for arriving at your destination on time.
 
-```{r plot 1}
+```{r plot1}
 plot1 <- ggplot() +
   geom_boxplot(data = DeltaAir, mapping = aes(x = origin, y = arr_delay, color = arr_delay)) +
   coord_cartesian(ylim = c(-5,200))
@@ -44,7 +49,7 @@ plot1
 ```
 
 
-```{r question 3}
+```{r plot2}
 dest_avgs <- flights %>%
   group_by(dest) %>%
   summarize(avg_delay = mean(arr_delay, na.rm = TRUE))
