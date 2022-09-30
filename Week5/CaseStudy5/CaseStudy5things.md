@@ -10,70 +10,7 @@ SUMMARY:
 Gun deaths in the United States constitute a major cause for concern, affecting over 40,000 people annually. While all the deaths result from guns, the parts of the population most affected and the causes are various. The leading cause of death by guns is suicide, making up 2/3s of gun deaths annually. And more than85% of those deaths are male victims. Other categories of gun fatalities include women in domestic violence, mass shootings, and homicides. Given the differences in gun violence victims, it is difficult to suggest a single solution to attack the problem. 
 
 
-```r
-library(tidyverse)
-```
 
-```
-## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
-```
-
-```
-## v ggplot2 3.3.5     v purrr   0.3.4
-## v tibble  3.1.6     v dplyr   1.0.7
-## v tidyr   1.1.4     v stringr 1.4.0
-## v readr   2.1.1     v forcats 0.5.1
-```
-
-```
-## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()
-```
-
-```r
-download.file("https://raw.githubusercontent.com/fivethirtyeight/guns-data/master/full_data.csv", "GunDeaths")
-
-GunDeaths <- read_csv("GunDeaths")
-```
-
-```
-## New names:
-## * `` -> ...1
-```
-
-```
-## Rows: 100798 Columns: 11
-```
-
-```
-## -- Column specification --------------------------------------------------------
-## Delimiter: ","
-## chr (6): month, intent, sex, race, place, education
-## dbl (5): ...1, year, police, age, hispanic
-```
-
-```
-## 
-## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
-```
-
-```r
-head(GunDeaths)
-```
-
-```
-## # A tibble: 6 x 11
-##    ...1  year month intent  police sex     age race     hispanic place education
-##   <dbl> <dbl> <chr> <chr>    <dbl> <chr> <dbl> <chr>       <dbl> <chr> <chr>    
-## 1     1  2012 01    Suicide      0 M        34 Asian/P~      100 Home  BA+      
-## 2     2  2012 01    Suicide      0 F        21 White         100 Stre~ Some col~
-## 3     3  2012 01    Suicide      0 M        60 White         100 Othe~ BA+      
-## 4     4  2012 02    Suicide      0 M        64 White         100 Home  BA+      
-## 5     5  2012 02    Suicide      0 M        31 White         100 Othe~ HS/GED   
-## 6     6  2012 02    Suicide      0 M        17 Native ~      100 Home  Less tha~
-```
 
 ```r
 age_grouping <- GunDeaths %>%
@@ -115,7 +52,7 @@ ggplot() +
   )
 ```
 
-![](CaseStudy5things_files/figure-html/bar graph-1.png)<!-- -->
+![](CaseStudy5things_files/figure-html/bargraph-1.png)<!-- -->
 This graph demonstrates that men are more subject to be victims of gun violence. At every age group and 
 different intent men are far more likely to be killed by gun violence. Suicide and homicide are 
 particularly striking because of the sheer amount of fatalities, with suicide as the 
@@ -144,7 +81,7 @@ ggplot() +
 ## Warning: Removed 1 rows containing missing values (position_stack).
 ```
 
-![](CaseStudy5things_files/figure-html/density graph-1.png)<!-- -->
+![](CaseStudy5things_files/figure-html/densitygraph-1.png)<!-- -->
 This graph shows gun deaths for different ages and the intent behind the death. It demonstrates that as male 
 age increases so does suicide rate. For women, there seems to be a peak age in suicide right around 45 to about 75,
 and it is less dense than the male suicide density. Which seems to be true with what we know about female suicide,
@@ -182,7 +119,7 @@ ggplot() +
        title = "Amount of Gun Deaths by Season")
 ```
 
-![](CaseStudy5things_files/figure-html/first plot-1.png)<!-- -->
+![](CaseStudy5things_files/figure-html/firstplot-1.png)<!-- -->
 The graphs reveal that there is a significant difference in suicide gun fatalities when broken down by season.
 So, we see that suicide is actually higher in the fall and spring. Our client might want to make commercials during that time that are for suicide prevention.
 
@@ -196,7 +133,7 @@ ggplot() +
        title = "Amount of Gun Deaths by Season Split by Gender")
 ```
 
-![](CaseStudy5things_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+![](CaseStudy5things_files/figure-html/secondplot-1.png)<!-- -->
 
 Taking a closer look to examine how men and women are specifically affected in different seasons by suicide gun
 violence, we can see similar results from what we saw in our previous graphs. However, we do still see a distinction. The

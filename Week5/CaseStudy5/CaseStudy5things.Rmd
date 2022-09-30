@@ -9,14 +9,15 @@ output:
 SUMMARY:
 Gun deaths in the United States constitute a major cause for concern, affecting over 40,000 people annually. While all the deaths result from guns, the parts of the population most affected and the causes are various. The leading cause of death by guns is suicide, making up 2/3s of gun deaths annually. And more than85% of those deaths are male victims. Other categories of gun fatalities include women in domestic violence, mass shootings, and homicides. Given the differences in gun violence victims, it is difficult to suggest a single solution to attack the problem. 
 
-```{r}
+
+```{r setup, include=FALSE}
 library(tidyverse)
 download.file("https://raw.githubusercontent.com/fivethirtyeight/guns-data/master/full_data.csv", "GunDeaths")
 
 GunDeaths <- read_csv("GunDeaths")
 head(GunDeaths)
 ```
-```{r bar graph}
+```{r bargraph}
 age_grouping <- GunDeaths %>%
   filter(intent != " ", age != " ") %>%
   mutate(agegroup = case_when(
@@ -42,7 +43,7 @@ This graph demonstrates that men are more subject to be victims of gun violence.
 different intent men are far more likely to be killed by gun violence. Suicide and homicide are 
 particularly striking because of the sheer amount of fatalities, with suicide as the 
 most deadly form of gun violence for men.
-```{r density graph}
+```{r densitygraph}
 ggplot() +
   geom_density(data = GunDeaths, aes(x = age, fill = intent), alpha = .5, position = 'fill', adjust = 1.5) +
   facet_wrap(~sex) +
@@ -62,7 +63,7 @@ meaning typically women opt for pill overdose or other less violent means of dea
 
 
 
-```{r first plot}
+```{r firstplot}
 deathseasons <- GunDeaths %>%
   mutate(month = as.factor(month))
 
@@ -92,7 +93,7 @@ ggplot() +
 The graphs reveal that there is a significant difference in suicide gun fatalities when broken down by season.
 So, we see that suicide is actually higher in the fall and spring. Our client might want to make commercials during that time that are for suicide prevention.
 
-```{r}
+```{r secondplot}
 ggplot() +
   geom_bar(data = nonulls, aes(x = season, fill = sex)) +
   facet_wrap(~intent, scales = "free") +
