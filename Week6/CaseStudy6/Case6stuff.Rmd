@@ -2,7 +2,9 @@
 title: "CaseStudy6"
 author: "Mallory Dickerson"
 date: "9/28/2022"
-output: html_document
+output: 
+  html_document:
+    keep_md: TRUE
 ---
 
 ```{r setup, include=FALSE}
