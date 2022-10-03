@@ -1,0 +1,38 @@
+---
+title: "Task11"
+author: "Mallory Dickerson"
+date: "9/29/2022"
+output: 
+  html_document:
+    keep_md: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+fandango <- tempfile()
+download.file("https://github.com/fivethirtyeight/data/raw/master/fandango/fandango_score_comparison.csv", "fandango")
+
+FandangoData <- read_csv("fandango")
+```
+
+```{r}
+head(FandangoData)
+
+FandangoTidy <- FandangoData %>%
+  select(FILM, Fandango_Stars, RT_norm_round, Metacritic_norm_round, IMDB_norm_round) %>%
+  pivot_longer(2:5, names_to = "Critic", values_to = "Rating")
+
+head(FandangoTidy, n = 20)
+```
+```{r}
+ggplot() +
+  geom_bar(data = FandangoTidy, aes(x = Rating, fill = Critic), position = 'dodge')
+
+
+```
+
