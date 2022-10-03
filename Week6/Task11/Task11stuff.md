@@ -119,5 +119,5 @@ ggplot() +
   geom_bar(data = FandangoTidy, aes(x = Rating, fill = Critic), position = 'dodge')
 ```
 
-![](Task11stuff_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+![](Task11stuff_files/figure-html/plot1-1.png)<!-- -->
 

@@ -29,7 +29,7 @@ FandangoTidy <- FandangoData %>%
 
 head(FandangoTidy, n = 20)
 ```
-```{r}
+```{r plot1}
 ggplot() +
   geom_bar(data = FandangoTidy, aes(x = Rating, fill = Critic), position = 'dodge')
 
