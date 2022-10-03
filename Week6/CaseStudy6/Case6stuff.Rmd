@@ -1,0 +1,94 @@
+---
+title: "CaseStudy6"
+author: "Mallory Dickerson"
+date: "9/28/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(corrplot)
+?diamonds
+head(diamonds)
+```
+
+
+```{r xdistribution}
+ggplot(data = diamonds, aes(x = x)) +
+  geom_histogram(binwidth = 1, color = "grey") +
+  labs(
+    x = "Length of Diamond in mm",
+    y = "Count",
+    title = "Distribution of Round Cut Diamond Length"
+  ) +
+  theme_bw()
+```
+```{r ydistribution}
+ggplot(data = diamonds, aes(x = y)) +
+  geom_histogram(binwidth = 1, color = "grey") +
+  labs(
+    x = "Width of Diamond in mm",
+    y = "Count",
+    title = "Distribution of Round Count Diamond Width"
+  ) +
+  theme_bw()
+
+```
+
+```{r zdistribution}
+ggplot(data = diamonds, aes(x = z)) +
+  geom_histogram(binwidth = .5, color = "grey") +
+  labs(
+    x = "Depth of Diamond in mm",
+    y = "Count",
+    title = "Distribution of Round Cut Diamond Depth"
+    
+  )
+```
+```{r Cutprice}
+ggplot() +
+  geom_col(data = diamonds, aes(x = cut, y = price))
+```
+
+
+```{r ClarityPrice}
+ggplot() +
+  geom_col(data = diamonds, aes(x = clarity, y = price))
+```
+It is unusual that the best clarity is not the most expensive. This could be because clarity decreases with size.
+```{r caratprice1}
+ggplot() +
+  geom_jitter(data = diamonds, aes(x = carat, y = price))
+```
+
+```{r CutCarat}
+ggplot() +
+  geom_jitter(data = diamonds, aes(x = carat,  y = price, color = cut)) + 
+  labs(x = "Carat",
+       y = "Price",
+       Title = "Carat vs Price with Different Quality Cuts") +
+  theme_bw()
+```
+
+The most important variable for predicting price is carat. This is not particularly obvious because it seems 
+that the data set has price per carat rather than pure price. Since size plays the most important role, 
+people will pay for size regardless of cut and clarity.
+
+```{r PricevsCarat}
+ggplot() +
+  geom_jitter(data = diamonds, aes(x = carat, y = price)) +
+  labs(
+    x = "Carat",
+    y = "Price",
+    title = "Carat vs Price") +
+  theme_bw()
+```
+The price distribution for small diamonds is more compressed. Meaning the top of the range is not as far from 
+the bottom of the range. This does agree with my expectation, people won't pay as much for small diamonds
+even with high clarity and perfect cut.
+
