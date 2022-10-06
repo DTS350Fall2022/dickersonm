@@ -1,0 +1,141 @@
+---
+title: "Task12"
+author: "Mallory Dickerson"
+date: "10/4/2022"
+output: 
+  html_document:
+    keep_md: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(readr)
+library(haven)
+library(readxl)
+library(downloader)
+```
+
+```{r}
+dat1 <- tempfile()
+download.file("https://github.com/WJC-Data-Science/DTS350/raw/master/Dart_Expert_Dow_6month_anova/Dart_Expert_Dow_6month_anova.csv", "dat1")
+Dart1 <- read_csv("dat1")
+
+dat2 <- tempfile()
+download.file("https://github.com/WJC-Data-Science/DTS350/raw/master/Dart_Expert_Dow_6month_anova/Dart_Expert_Dow_6month_anova.RDS", "dat2", mode = "wb")
+read_rds("dat2")
+Dart2 <- read_rds("dat2")
+
+dat3 <- tempfile()
+download.file("https://github.com/WJC-Data-Science/DTS350/raw/master/Dart_Expert_Dow_6month_anova/Dart_Expert_Dow_6month_anova.dta", dat3, mode = "wb")
+read_dta(dat3)
+Dart3 <- read_dta(dat3)
+
+dat4 <- tempfile()
+download.file("https://github.com/WJC-Data-Science/DTS350/raw/master/Dart_Expert_Dow_6month_anova/Dart_Expert_Dow_6month_anova.sav", "dat4", mode = "wb")
+read_sav("dat4")
+Dart4 <- read_sav("dat4")
+
+dat5 <- tempfile()
+download.file("https://github.com/WJC-Data-Science/DTS350/raw/master/Dart_Expert_Dow_6month_anova/Dart_Expert_Dow_6month_anova.xlsx", "dat5", mode = "wb")
+read_xlsx("dat5")
+Dart5 <- read_xlsx("dat5")
+
+```
+
+```{r}
+all_equal(Dart1, Dart2, Dart3, convert = TRUE)
+all_equal(Dart1, Dart4, Dart5, convert = TRUE)
+```
+```{r BoxPlot}
+head(Dart1)
+ggplot() +
+  geom_boxplot(data = Dart1, aes(x = variable, y = value, fill = variable)) +
+  labs(x = "Variable",
+       y = "Value",
+       title = "Variable vs Value Using Boxplot") +
+  theme_bw()
+```
+The boxplot shows that PROS has the highest return, but that it has the largest range, leaving open
+the possibilty that you don't gain as much as is shown on the high end. The Dow Jones operates in a much narrower
+range, with not as much potential on the upside, but also not as much risk on the downside.
+```{r JitterReturn}
+ggplot() +
+  geom_jitter(data = Dart1, aes(x = variable, y = value, color = variable)) +
+  labs(x = "Variable",
+       y ="Value",
+       title = "Varible vs Value Using Jitter") +
+  theme_bw()
+```
+The jitter plot shows essentially the same thing as the boxplot. The Dow Jones return is much more compressed 
+compared to DARTS and PROS. The jitter plot also allows us to see that PROS and DARTS have similar spread in 
+their range.
+
+
+
+```{r AVG_return}
+ggplot() +
+  geom_line(data = Dart1, aes(x = contest_period, y = value, group = variable, color = variable)) +
+  labs(x = "Contest Period",
+       y = "Value",
+       title = "Contest Period VS Value") +
+  theme_bw()
+```
+The line plot shows us that there is more volatility in DARTS and PROS than in Dow Jones. 
+Volatility makes it difficult to realize gains that are lasting, though it also creates opportunity in the 
+short term.
+
+
+```{r tidying the data}
+head(Dart1)
+
+Dart1Tidy <- Dart1 %>%
+   mutate(contest_period = str_replace_all(contest_period, '19', '_19'),
+         contest_period = str_replace(contest_period, 'Febuary', 'February'),
+         contest_period = str_replace(contest_period, 'Dec._1993', 'December_1993')) %>%
+  separate(contest_period, into = c("month", "year_end"), sep = "-") %>%
+  separate(year_end, into = c("month", "year"), sep = "_") %>%
+  arrange(factor(month, levels = month.name))
+
+head(Dart1Tidy)
+view(Dart1Tidy)
+
+#saving as RDS
+saveRDS(Dart1Tidy, file = "Dart1Tidy.rds")
+
+```
+
+
+```{r Plot}
+ggplot(data = Dart1Tidy, aes(x = year, y = value, group = month)) +
+  geom_point(aes(color = variable)) +
+  geom_line(aes(color = variable)) +
+  facet_wrap(~month, scales = "free") +
+  labs(x = "Year",
+       y = "Returns",
+       title = "Returns By Month from 1990 through 1998") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45))
+```
+It looks like volatility is significant for PROS and DARTS, making it difficult to have a long term investment
+strategy. 
+
+
+
+```{r}
+FinalTable <- Dart1 %>%
+  filter(variable == "DJIA") %>%
+  mutate(contest_period = str_replace_all(contest_period, "19", "_19"),
+         contest_period = str_replace(contest_period, "Febuary", "February"),
+         contest_period = str_replace(contest_period, "Dec._1993", "December_1993")) %>%
+  separate(contest_period, into = c("Month", "Year_end"), sep = "-") %>%
+  separate(Year_end, into = c("Month", "Year"), sep = "_") %>%
+  pivot_wider(names_from = "Year", values_from = "value") %>%
+  arrange(factor(Month, levels = month.name)) %>%
+  select(-variable)
+FinalTable
+```
+
