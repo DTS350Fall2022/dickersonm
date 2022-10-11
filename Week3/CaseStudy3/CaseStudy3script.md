@@ -143,7 +143,8 @@ ggplot()+
   geom_point(without_kuwait, mapping = aes(x = year, y = gdpPercap, color = continent)) +
   geom_path(without_kuwait, mapping = aes(x = year, y = gdpPercap, color = continent)) +
   geom_point(means, mapping = aes(x = year, y = wmean, size = population))+
-  facet_wrap(~ continent, nrow = 2)
+  facet_wrap(~ continent, nrow = 2) +
+  scale_fill_discrete(name = 'population/100000')
 ```
 
 ![](CaseStudy3script_files/figure-html/graph2-1.png)<!-- -->
