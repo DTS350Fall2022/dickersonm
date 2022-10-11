@@ -1,0 +1,165 @@
+---
+title: "CaseStudy7"
+author: "Mallory Dickerson"
+date: "10/6/2022"
+output: 
+  html_document:
+    keep_md: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(haven)
+library(readr)
+library(readxl)
+library(downloader)
+library(foreign)
+```
+
+```{r}
+dat1 <- tempfile()
+download.file("https://github.com/WJC-Data-Science/DTS350/raw/master/CaseStudy7Data/heights.csv", "dat1")
+readLines("dat1", n = 5) 
+read_csv("dat1", skip = 2)
+Height_csv <- read_csv("dat1", skip = 2, col_names = c("earn", "height", "sex", "ed", "age", "race"))
+
+dat2 <- tempfile()
+download.file("https://github.com/WJC-Data-Science/DTS350/raw/master/Height.xlsx", "dat2", mode = "wb")
+read_xlsx("dat2", skip = 2)
+Height_xlsx <- read_xlsx("dat2", skip = 2)
+
+dat3 <- tempfile()
+download.file("https://github.com/WJC-Data-Science/DTS350/raw/master/CaseStudy7Data/B6090.DBF", "dat3", mode = "wb")
+read.dbf("dat3")
+Height_dbf <- read.dbf("dat3")
+
+
+dat4 <- tempfile()
+download.file("https://github.com/WJC-Data-Science/DTS350/raw/master/germanconscr.dta", "dat4", mode = "wb")
+read_stata("dat4")
+German_conscript_stata <- read_stata("dat4")
+
+dat5 <- tempfile()
+download.file("https://github.com/WJC-Data-Science/DTS350/raw/master/germanprison.dta", "dat5", mode = "wb")
+read_stata("dat5")
+Bavarian_heights <- read_stata("dat5")
+
+dat6 <- tempfile()
+download.file("http://www.ssc.wisc.edu/nsfh/wave3/NSFH3%20Apr%202005%20release/main05022005.sav", "dat6", mode = "wb")
+read_sav("dat6")
+Wisco <- read_sav("dat6")
+```
+
+tidying CSV file
+```{r}
+bls <- Height_csv %>%  
+  mutate(birth_year = 1950,
+         height.in = height,
+         height.cm = height.in * 2.54,
+         study_id = 'BLS Wage and Height Data in 1950') %>%  
+  select(birth_year, height.cm, height.in, study_id)
+
+```
+
+tidying xlsx file 
+```{r}
+WorldData <- Height_xlsx %>%  
+  pivot_longer(3:203, names_to = "years", values_to = "heights.cm", values_drop_na = TRUE) %>%   
+  mutate(year_decade = years, 
+         height.in = heights.cm / 2.54) %>%  
+  separate(years, into = c("century", "decade"), sep = -2) %>%  
+  separate(decade, into = c("decade", "year"), sep = -1)
+head(WorldData)
+write.csv(WorldData,"worlddata.csv", row.names = TRUE)
+head(WorldData)
+```
+
+
+tidying DBF file
+```{r}
+height_dbf_tidy <- Height_dbf %>%  
+  mutate(height.in = CMETER / 2.54,
+         height.cm = CMETER,
+         birth_year = SJ,
+         study_id = 'Heights of SE and SW german soldiers, 18th century') %>%  
+  select(height.in, height.cm, birth_year, study_id)
+```
+
+
+
+tidying german male height dta file
+```{r}
+german_conscript_tidy <- German_conscript_stata %>%  mutate(birth_year = bdec, 
+         height.cm = height, 
+         height.in = height.cm / 2.54,
+         study_id = 'German male conscripts in Bavaria, 19th centery') %>%  
+  select(birth_year, height.cm, height.in, study_id)
+german_conscript_tidy
+```
+
+tidying bavarian male height dta
+```{r}
+bavarian_heights_tidy <- Bavarian_heights %>%
+  mutate(birth_year = bdec,
+         height.cm = height,
+         height.in = height.cm / 2.54,
+         study_id = 'Heights of bavarian male conscripts, 19th century') %>%
+  select(birth_year, height.in, height.cm, study_id)
+
+bavarian_heights_tidy
+```
+
+
+tidying wisco file
+```{r}
+wisco_tidy <- Wisco %>%  
+  mutate(birth_year = DOBY + 1900, height.in = RT216F*12 + RT216I, height.cm = height.in * 2.54, study_id = 'National Survey (Wisconsin), 19th century') %>%  
+  select(birth_year, height.in, height.cm, study_id)
+wisco_tidy
+```
+
+
+combining all data sets
+```{r}
+combined <- bind_rows(bls, height_dbf_tidy, german_conscript_tidy, bavarian_heights_tidy, wisco_tidy)
+
+head(combined)
+write.csv(combined,"height_data.csv", row.names = TRUE)
+```
+
+Germany plot
+```{r}
+germany <- WorldData %>%
+  filter(`Continent, Region, Country` == "Germany")
+
+ggplot() + 
+  geom_boxplot(data = WorldData, aes(x = decade, y = height.in)) +
+  geom_point(data = germany, aes(x = decade, y = height.in, color = "red")) +
+  labs(
+    x = "Decade",
+    y = "Height in Inches",
+    title = "Heights across the World compared to Germany",
+    subtitle = "Germany highlighted in red"
+  ) +
+  theme_bw()
+```
+The boxplot demonstrates that across decades, height ranges and average height has not fluctuated much.
+Averages are all above 65 inches and below 67 inches. I'm not sure you can tell if height is increasing across
+decades. However, the graph does demonstrate that German male height is increasing across decades.
+
+```{r}
+head(combined)
+ggplot(data = combined, aes(x = birth_year, y = height.in)) +
+  geom_col() +
+  facet_wrap(~study_id, scales = "free") +
+  labs(x = "Year",
+       y = "Height in Inches",
+       title = "Height Distribution Across Years",
+       subtitle = "Faceted by different studies") +
+  theme_bw()
+```
+It is difficult to decide whether height is increasing across the different studies. 
