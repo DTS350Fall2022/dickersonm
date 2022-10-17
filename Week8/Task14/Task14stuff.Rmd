@@ -1,0 +1,92 @@
+---
+title: "task14"
+author: "Mallory Dickerson"
+date: "10/17/2022"
+output: 
+  html_document:
+    keep_md: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(downloader)
+```
+
+```{r loading data}
+bible <- tempfile()
+download.file("https://github.com/WJC-Data-Science/DTS350/raw/master/bible.csv", "bible", mode = "wb")
+bible_data <- read_csv("bible")
+head(bible_data)
+str(bible_data)
+```
+
+
+filtering for new testament 
+```{r NT}
+NT <- bible_data %>%
+  filter(volume_title == "New Testament") %>%
+  select(scripture_text)
+head(NT)
+```
+
+filtering for old testament
+```{r OT}
+OT <- bible_data %>%
+  filter(volume_title == "Old Testament") %>%
+  select(scripture_text)
+head(OT)
+```
+
+
+```{r getting verse length}
+verse_length <- function(df) {
+  v_length <- vector("integer", 0)
+  for (row in df) {
+    v_length <- append(v_length, str_length(row))
+  }
+  
+  v_length
+}
+```
+
+verse length averages
+```{r averages}
+mean(verse_length(NT))
+
+mean(verse_length(OT))
+```
+
+
+getting LORD word occurance
+```{r LORD}
+str_length(str_extract_all(NT, "(?i)lord"))
+
+str_length(str_extract_all(OT, "(?i)lord"))
+```
+
+
+data viz
+```{r distribution}
+verse_data <- as.data.frame(verse_length(NT))
+head(verse_data)
+ggplot(data = verse_data) +
+  geom_histogram(aes(x = verse_length(NT), color = 'grey')) +
+  labs(
+    x = "Verse Length",
+    y = "Occurance of Verse Length",
+    title = 'New Testament Verse Length Occurances'
+  ) +
+  theme_bw()
+
+```
+
+Answering the questions for the task, we see that average verse length in the OT vs NT are comparable,
+with the OT having an average verse length of about 136 words vs the NT's average of 118 words in a verse.
+Moving to question 2 we see a very significant difference in the use of the word 'lord' in the NT vs OT. 
+The OT uses 'lord' 58,300 times and the NT only uses it 5,900 times. 'Lord' is seen over 52,000 more times
+in the OT than in the NT. The graph demonstrates that in the NT verses are typically right around 100 to 120 words
+in length. We can assume that the NT is shorter than the OT based off the answers to these three questions.
