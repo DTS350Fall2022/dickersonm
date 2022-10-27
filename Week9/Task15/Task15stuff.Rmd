@@ -1,0 +1,81 @@
+---
+title: "Task15"
+author: "Mallory Dickerson"
+date: "10/20/2022"
+output: 
+  html_document:
+    keep_md: TRUE
+    code_folding: 'hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(downloader)
+install.packages("riem", dependencies = TRUE)
+library(riem)
+```
+
+
+```{r}
+carwash <- tempfile()
+download.file('https://github.com/WJC-Data-Science/DTS350/raw/master/carwash.csv', 'carwash', mode = 'wb')
+carwash_data <- read_csv('carwash')
+head(carwash_data)
+str(carwash_data)
+```
+
+changing the timezone
+```{r}
+tz_carwash <- carwash_data %>%
+  with_tz(tzone = "Us/Mountain")
+```
+
+creating an hourly grouping
+```{r}
+carwash_hour <- tz_carwash %>%
+  mutate(hour = ceiling_date(time, "hour"))
+head(carwash_hour)
+```
+
+aggregate the point of sale data into hours sales totals
+```{r}
+hour_sales <- carwash_hour %>%
+  group_by(hour) %>%
+  summarize(across(amount, sum))
+```
+
+weather
+```{r}
+riemstuff <- tempfile()
+download.file("https://github.com/WJC-Data-Science/DTS350/raw/master/Task15riem_data.csv", "riem", mode = 'wb')
+riem_stuff <- read_csv("riem")
+
+
+matching_temps <- riem_stuff %>%
+  with_tz(tzone = "Us/Mountain") %>%
+  filter(tmpf != "") %>%
+  mutate(hour = ceiling_date(valid, "hour")) %>%
+  select(hour, tmpf)
+head(matching_temps)
+  
+```
+
+combining databases
+```{r}
+left_join(hour_sales, matching_temps) %>%
+  arrange(hour) %>%
+  ggplot(aes(x = amount, y = tmpf)) +
+  geom_point() +
+  geom_line() +
+  labs(x = 'Sales',
+       y = 'Temperature in F',
+       title = 'Sale vs Temperature') +
+  theme_bw()
+  
+```
+
