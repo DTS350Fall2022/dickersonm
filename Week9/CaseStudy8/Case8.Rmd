@@ -99,11 +99,11 @@ revenue_data %>%
   scale_x_continuous(limits = c(0,24), breaks = seq(0,24,4)) +
   theme_bw()
 ```
-
+The best hours for operation are from about 9 am to 9 pm. 
 ```{r}
 total_sales <- revenue_data %>%
   group_by(Name) %>%
-  summarise(across(Amount, sum))
+  summarize(across(Amount, sum))
 ```
 
 ```{r}
@@ -116,4 +116,7 @@ total_sales %>%
     theme_bw() +
     theme(legend.position = 'none')
 ```
-
+Looking at total sales, we see that Missing is doing the worst. Frozone is the next worst with around 5000
+total sales. Hotdiggity had the most total sales at over 20000. ShortStop, SplashandDash, Tacontento all had total
+sales in between 10k and 15k. LaBelle went over 15k total sales. My final recommendation would be that HotDiggity
+is the best company to give a loan.
