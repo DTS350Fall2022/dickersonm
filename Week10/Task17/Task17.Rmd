@@ -1,0 +1,168 @@
+---
+title: "Task17"
+author: "Mallory Dickerson"
+date: "10/27/2022"
+output: 
+  html_document:
+    keep_md: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(tidyquant)
+```
+
+## picking stocks
+
+```{r}
+## my stocks
+stock1 <- "TGT"
+
+stock2 <- "ANF"
+
+stock3 <- "AEO"
+
+## my friends stocks
+stock4 <- "NKE"
+
+stock5 <- "LULU"
+
+stock6 <- "UA"
+
+```
+
+
+## pulling price performance for my stocks
+TARGET
+```{r}
+start <- today() - years(1)
+end <- today()
+target_prices <- tq_get(stock1, get = "stock.prices", from = start, to = end)
+target_prices
+
+target_monthly <- target_prices %>%
+  tq_transmute(adjusted, mutate_fun = monthlyReturn)
+
+
+```
+
+ABERCROMBIE AND FITCH
+```{r}
+anf_prices <- tq_get(stock2, get = "stock.prices", from = start, to = end)
+anf_prices
+
+anf_monthly <- anf_prices %>%
+  tq_transmute(adjusted, mutate_fun = monthlyReturn)
+anf_monthly
+```
+AMERICAN EAGLE
+```{r}
+aeo_prices <- tq_get(stock3, get = "stock.prices", from = start, to = end)
+aeo_prices
+
+aeo_monthly <- aeo_prices %>%
+  tq_transmute(adjusted, mutate_fun = monthlyReturn)
+aeo_monthly
+```
+## price performance for friend
+NIKE
+```{r}
+nike_prices <- tq_get(stock4, get = "stock.prices", from = start, to = end)
+nike_prices
+
+nike_monthly <- nike_prices %>%
+  tq_transmute(adjusted, mutate_fun = monthlyReturn)
+nike_monthly
+```
+LULULEMON
+```{r}
+lulu_prices <- tq_get(stock5, get = "stock.prices", from = start, to = end)
+lulu_prices
+
+lulu_monthly <- lulu_prices %>%
+  tq_transmute(adjusted, mutate_fun = monthlyReturn)
+lulu_monthly
+```
+UNDER ARMOUR
+```{r}
+ua_prices <- tq_get(stock6, get = "stock.prices", from = start, to = end)
+ua_prices
+
+ua_monthly <- ua_prices %>%
+  tq_transmute(adjusted, mutate_fun = monthlyReturn)
+ua_monthly
+```
+## viz
+```{r}
+library(timetk)
+my_stocks <- tq_get(c(stock1, stock2, stock3), get = "stock.prices", from = start, to = end)
+my_stocks
+
+friend_stocks <- tq_get(c(stock4, stock5, stock6), get = "stock.prices", from = start, to = end)
+friend_stocks
+
+combined <- tq_get(c(stock1,stock2,stock3,stock4,stock5,stock6), get = "stock.prices", from = start, to = end)
+
+
+combined %>%
+  group_by(symbol) %>%
+  plot_time_series(date, adjusted, 
+                   .facet_ncol = 6,
+                   .interactive = FALSE)
+
+my_stocks %>%
+  group_by(symbol) %>%
+  plot_time_series(date, adjusted, 
+                   .facet_ncol = 3,
+                   .interactive = FALSE)
+
+friend_stocks %>%
+  group_by(symbol) %>%
+  plot_time_series(date, adjusted, 
+                   .facet_ncol = 3,
+                   .interactive = FALSE)
+
+library(DT)
+library(dygraphs)
+library(timetk)
+
+combinedplot <- combined %>%
+  select(symbol, date, adjusted) %>%
+  pivot_wider(names_from = symbol, values_from = adjusted) %>%
+  tk_xts(date_var = date)
+dygraph(combinedplot)
+```
+
+```{r}
+library(timetk)
+
+combined %>%
+  filter(symbol == "LULU") %>%
+  plot_time_series(date, adjusted, 
+                   .interactive = FALSE,
+                   .x_lab = "Date",
+                   .y_lab = "Adjusted Value of Stock Price",
+                   .title = "Lululemon Stock Price Between October 2021 to October 2022")
+  
+
+```
+```{r}
+combined %>%
+  filter(symbol == "TGT") %>%
+  plot_time_series(date, adjusted,
+                   .interactive = FALSE,
+                   .x_lab = "Date",
+                   .y_lab = "Adjusted Value of Stock Price",
+                   .title = "Target Stock Price Between October 2021 to October 2022")
+```
+
+I chose to first display all the chosen stocks in order to easily see the best performing one and 
+in the process of doing so I realized that Target and Lululemon had similar fluctuations in stock prices which can
+perhaps be attributed to similar forces acting in the retail market. I chose to display the top two stocks, 1 from
+my chosen stocks and 1 from my friends chosen stocks. I wanted to compare with a trend line to show more clearly 
+the starting share value of the stock to the ending share value of the stock.
