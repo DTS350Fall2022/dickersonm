@@ -1,0 +1,67 @@
+---
+title: "Case9"
+author: "Mallory Dickerson"
+date: "11/2/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyquant)
+library(dygraphs)
+library(tidyverse)
+library(timetk)
+library(lubridate)
+```
+
+
+
+## stock function stuff
+```{r}
+start <- today() - years(5)
+end <- today()
+
+stock_calc <- function(tickers_today) {
+  stocks <- tq_get(tickers_today, get = "stock.prices", from = start, to = end)
+  combinedplot <- stocks %>%
+  select(symbol, date, adjusted) %>%
+  pivot_wider(names_from = symbol, values_from = adjusted) %>%
+  tk_xts(date_var = date)
+dygraph(combinedplot)
+}
+
+##this is what will change, just put in new stocks
+tickers <- c("CXW", "F", "GM", "KR", "WDC", "NKE","T", "WDAY", "WFC", "WMT")
+
+
+stock_calc(tickers)
+```
+
+
+## volume chart
+```{r}
+volume <- function(tickers_today) {
+  tq_get(tickers_today, get = "stock.prices", from = start, to = end) %>%
+    ggplot(aes(x = date, y = volume/100000, color = symbol)) +
+    geom_line() +
+    labs(
+      x = "Date",
+      y = "Volume Divided by 100,000",
+      title = "Stock Volume Chart"
+    ) +
+    theme_tq()
+}
+
+volume(tickers)
+
+```
+
+I chose the first graph visualization simply because I used it in the task as well and found it very effective
+in showing the best or best performing stock over time. It clearly demonstrates that WDAY WMT and NKE have the 
+most expensive shares of stock.
+
+The second graph I chose a line graph because we are looking at stock volume over time. I wanted a more readable
+scale so I chose to divide it by 100000 and just label the axis so that is clear. 
