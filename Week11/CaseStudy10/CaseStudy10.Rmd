@@ -16,6 +16,8 @@ library(tidyverse)
 library(USAboundaries)
 library(downloader)
 library(maps)
+library(ggplot2)
+
 ```
 
 ```{r}
@@ -24,27 +26,46 @@ download.file("https://github.com/WJC-Data-Science/DTS350/raw/master/permits.csv
 permits <- read_csv("permits")
 head(permits)
 ```
+
+## FIPS setup stuff
 ```{r}
-s_codes <- state_codes %>%
-  mutate(state = as.integer(state_code))
-head(s_codes)
+
+counties <- us_counties()
+
+FIPS <- permits %>%
+  mutate(state = as.character(state), stateFIPS = str_pad(state, 2,pad = "0")) %>%
+  mutate(county = as.character(county), countyFIPS = str_pad(county, 3,pad = "0"))
+FIPS
+
+
+FIPS$geoid <- paste0(FIPS$stateFIPS, FIPS$countyFIPS)
+head(FIPS)
+
+counties <- counties[, !duplicated(colnames(counties))]
+head(counties)
+
+fips_data <- merge(counties, FIPS, by = "geoid")
+head(fips_data)
 ```
 
-```{r}
-permits_data <- left_join(permits, s_codes, by = "state") %>%
-  group_by(state_name, year) %>%
-  summarize(across(value, sum))
 
-head(permits_data)
-```
 ## permits per state graph
 ```{r}
-permits_by_state <- ggplot(data = permits_data, aes(x = year, y = value/1000, color = state_name)) +
+totals <- fips_data %>%
+  filter(variable == "Single Family") %>%
+  group_by(state_name, StateAbbr, year) %>%
+  summarize(across(value,sum))
+
+tail(totals)
+
+
+
+permits_by_state <- ggplot(data = totals, aes(x = year, y = value, color = StateAbbr)) +
   geom_point() +
-  geom_line() +
+  geom_line(data = totals, aes(x = year, y = value)) +
   geom_vline(xintercept = 2008, linetype = "dotted") +
   labs(x = "Year",
-       y = "Value Divided by 1000",
+       y = "Single Family Permit Amounts",
        title = "Permits per Year by State") +
   theme_bw()
     
@@ -52,27 +73,27 @@ permits_by_state
 ```
 
 ```{r}
-top_states_recession_permits <- permits_data %>%
-  filter(year == 2006 | year == 2007 | year == 2008 | year == 2009) %>%
-  filter(value >= 150000)
+top_states_recession_permits <- totals %>%
+  filter(year == 2005 | year == 2006 | year == 2007 | year == 2008 | year == 2009 | year == 2010) %>%
+  filter(StateAbbr == "AZ" | StateAbbr == "CA" | StateAbbr == "FL" | StateAbbr == "GA" | StateAbbr == "TX" | StateAbbr == "NC")
 
 head(top_states_recession_permits)
 
-ggplot(data = top_states_recession_permits, aes(x = year, y = value/1000, color = state_name)) +
+top6 <- ggplot(data = top_states_recession_permits, aes(x = year, y = value, color = state_name)) +
   geom_point() +
   geom_line() +
   labs(x = "Year",
-       y = "Housing Permit Count Divided by 1000",
-       title = "Top 5 Housing Permit States Leading up to the Recession") +
+       y = "Single Family Housing Permit Count",
+       title = "Top 6 Single Family Housing Permit States Leading up to the Recession") +
   theme_bw()
-  
+top6 
 ```
 Looking at the top housing permits states a few years before the crash and a year after.
 
 ## sort of state geo plot
 ```{r}
 library(geofacet)
-recession_permits <- permits_data %>%
+recession_permits <- totals %>%
   filter(year == 2006 | year == 2007 | year == 2008)
 
 library(ggplot2)
@@ -80,14 +101,32 @@ library(ggplot2)
 ggplot(recession_permits, aes(year, value/10000, fill = value)) +
   geom_col() +
   coord_flip() +
-  facet_geo(~ state_name) +
-  xlab("Housing Permit Count Divided by ten thousand") +
+  facet_geo(~ StateAbbr) +
+  xlab("Single Family Housing Permit Count Divided by ten thousand") +
   ylab("Year") +
   theme_bw()
 ```
 
+##East Coast Housing Themes
 ```{r}
-Missouri <- permits_data %>%
+east_coast <- totals %>%
+  filter(year >= 1990) %>%
+  filter(StateAbbr == "NY" | StateAbbr == "CT" | StateAbbr == "NJ" | StateAbbr == "MA" | StateAbbr == "NH" | StateAbbr == "VT")
+
+
+east <- ggplot(data = east_coast, aes(x = year, y = value, color = state_name)) +
+  geom_point() +
+  geom_line() +
+  labs(x = "Year",
+       y = "Single Family Housing Permit Count",
+       title = "Single Family Housing Permit States ") +
+  theme_bw()
+east
+```
+
+
+```{r}
+Missouri <- totals %>%
   filter(state_name == 'Missouri') %>%
   ggplot(aes(x = year, y = value)) +
   geom_point() +
@@ -99,8 +138,6 @@ Missouri <- permits_data %>%
 
 Missouri
 ```
-
 I chose line graphs mostly because we are looking at permit amounts over time. The closest I could get to a
 map using the data was the geofacet. I chose to do geom_col on that just because it was extremely hard to read
-as a line graph and you can still see the decrease in permits, especially in states like california, texas,
-georgia, the carolinas, and florida. 
+as a line graph. 
