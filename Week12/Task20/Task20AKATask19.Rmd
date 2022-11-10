@@ -1,0 +1,74 @@
+---
+title: "Task20"
+author: "Mallory Dickerson"
+date: "11/8/2022"
+output: 
+  html_document:
+    keep_md: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## loading packages
+```{r}
+library(maps)
+library(leaflet)
+library(tidyverse)
+library(USAboundaries)
+library(USAboundariesData)
+library(sf)
+library(ggrepel)
+library(ggplot2)
+```
+
+## getting top 3 cities in each state
+```{r}
+UScities <- us_cities()
+head(UScities)
+
+largest_cities <- UScities %>%
+  filter(state_name != "Alaska", state_name != "Hawaii") %>%
+  mutate(city_state = str_c(city, ",", state_abbr)) %>%
+  group_by(state_name) %>%
+  arrange(desc(population)) %>%
+  slice(1:3)
+```
+## biggest city in each state
+```{r}
+largest <- largest_cities %>%
+   slice(1:1)
+```
+
+## middle sized city in each state
+```{r}
+middle <- largest_cities %>%
+  slice(2:2)
+```
+
+## smaller big city in each state
+```{r}
+smaller <- largest_cities %>%
+  slice(3:3)
+```
+
+
+## doing leaflet plot
+```{r}
+USA <-  us_states()
+Idaho_counties <- us_counties(states = "ID")
+
+us_cities_plot <- leaflet(data = largest_cities) %>%
+  addTiles() %>%
+  addCircleMarkers(data = largest, radius = 3.5, color = "navy") %>%
+  addCircleMarkers(data = middle, radius = 3.5, color = "blue") %>%
+  addCircleMarkers(data = smaller, radius = 3.5, color = "lightblue") %>%
+  addMarkers(popup = ~as.character(population),
+             label = ~city_state
+             )
+
+us_cities_plot
+```
+
