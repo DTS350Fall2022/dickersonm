@@ -1,0 +1,111 @@
+---
+title: "Case11"
+author: "Mallory Dickerson"
+date: "11/8/2022"
+output: 
+  html_document:
+    keep_md: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(USAboundaries)
+library(maps)
+library(leaflet)
+```
+
+
+
+```{r}
+permits_data <- tempfile()
+download.file("https://github.com/WJC-Data-Science/DTS350/raw/master/permits.csv", "permits")
+permits <- read_csv("permits")
+head(permits)
+
+PA <- permits %>%
+  filter(StateAbbr == "PA")
+head(PA)
+```
+
+```{r}
+latlong_data <- tempfile() 
+getwd()
+latlong <- read_csv("latlong.csv", col_names = c("countyname", "county", "county_code_text", "longitude", "latitude", "georeferenced_lat_and_long"), skip = 1)
+head(latlong)
+
+```
+
+```{r}
+PA_latlong <- left_join(PA, latlong, by = "county") %>%
+  arrange(desc(value))
+head(PA_latlong)
+str(PA_latlong)
+```
+
+
+ranking counties and getting number one county in PA
+```{r}
+PA_latlong$quartile <- ntile(PA_latlong$value, 4)
+PA_latlong
+
+topPAcounty <- PA_latlong %>%
+  filter(row_number() == 1)
+
+head(topPAcounty)
+```
+
+ranking off quartiles
+```{r}
+q1 <- PA_latlong %>%
+  filter(quartile == 1)
+head(q1)
+
+q2 <- PA_latlong %>%
+  filter(quartile == 2)
+head(q2)
+
+q3 <- PA_latlong %>%
+  filter(quartile == 3)
+head(q3)
+
+q4 <- PA_latlong %>%
+  filter(quartile == 4)
+```
+
+
+mapping
+```{r}
+PAmap <- leaflet() %>%
+  addTiles() %>%
+  addCircleMarkers(data = q4,
+                   color = "green",
+                   popup = ~county,
+                   label = ~countyname.x) %>%
+  addCircleMarkers(data = q3,
+                   color = "yellow",
+                   popup = ~county,
+                   label = ~countyname.x) %>%
+  addCircleMarkers(data = q2,
+                   color = "blue",
+                   popup = ~county,
+                   label = ~countyname.x) %>%
+  addCircleMarkers(data = q1,
+                   color = "red",
+                   popup = ~county,
+                   label = ~countyname.x) %>%
+  addCircleMarkers(data = topPAcounty,
+                   color = "pink",
+                   popup = ~county,
+                   label = ~countyname.x)
+  
+PAmap
+```
+I would advise my friend to move to Bucks County as it is the best county according to number of housing permits.
+Had issues getting the leaflet to correctly display the quartiles and their corresponding colors.
+
+
+
