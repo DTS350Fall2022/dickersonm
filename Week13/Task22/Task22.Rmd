@@ -1,0 +1,39 @@
+---
+title: "Task22"
+author: "Mallory Dickerson"
+date: "11/15/2022"
+output: 
+  html_document:
+    keep_md: TRUE
+---
+
+# Case Study 2 animated
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(gganimate)
+library(gifski)
+urlfile="https://github.com/WJC-Data-Science/DTS350/raw/master/coral.csv"
+mydata <- read_csv(url(urlfile))
+head(mydata)
+```
+
+```{r}
+animated <- mydata %>%
+  filter(Entity == "World") %>%
+  ggplot(mydata, mapping = aes(x = Year, y = Value)) +
+  geom_line() +
+  scale_color_viridis_d() +
+  labs(x = "Year", y = "Number of Coral Bleaching events", title = "World Coral Bleaching Totals") +
+  theme(legend.position = "top") +
+  theme_bw()
+animated
+animated + transition_reveal(Year)
+
+anim_save("animated.gif")
+```
+
