@@ -1,0 +1,131 @@
+---
+title: "Case12"
+author: "Mallory Dickerson"
+date: "11/17/2022"
+output: 
+  html_document:
+    keep_md: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(downloader)
+library(gganimate)
+library(ggplot2)
+```
+## reading in data
+```{r}
+avocado <- read_csv("avocado.csv", col_names = c("count", "date", "avgprice", "totalvol", "4046", "4225", "4770", "totalbags", "smallbags", "largebags", "xlargebags", "type", "year", "region"), skip = 1)
+```
+
+## seperating data into the specific cities given
+```{r}
+avocado_cities <- avocado %>%
+  filter(! region %in% c("California", "GreatLakes", "MidSouth", "Northeast", "NorthernNewEngland", "Plains", "SouthCentral", "Southeast", "TotalUS", "West", "WestTexNewMexico"))
+head(avocado_cities)
+```
+
+## seperating it into CA
+```{r}
+avocado_state <- avocado %>%
+  filter(region == "California")
+```
+
+## seperaring into regions
+```{r}
+avocado_regions <- avocado %>%
+  filter(region %in% c("GreatLakes", "MidSouth", "Northeast","NorthernNewEngland", "Plains", "SouthCentral", "Southeast","West", "WestTexNewMexico"))
+head(avocado_regions)
+```
+
+## total us 
+```{r}
+avocado_totalUS <- avocado %>%
+  filter(region == "TotalUS")
+```
+
+## creating visualizations
+```{r}
+avocadoplot <- ggplot(avocado_totalUS) +
+  geom_point(aes(x = largebags/1000, y = avgprice)) +
+  theme_bw() +
+  # gganimate specific bits:
+  labs(title = 'Year: {frame_time}', x = 'number of largebags sold divided by 1000', y = 'Average Price') +
+  transition_time(year) +
+  ease_aes('sine-in-out')
+
+avocadoplot
+
+
+avocadoplot <- ggplot(avocado_totalUS) +
+  geom_point(aes(x = smallbags/1000, y = avgprice)) +
+  theme_bw() +
+  # gganimate specific bits:
+  labs(title = 'Year: {frame_time}', x = 'number of smallbags sold divided by 1000', y = 'Average Price') +
+  transition_time(year) +
+  ease_aes('sine-in-out')
+
+
+```
+
+```{r}
+region_plot <- ggplot(avocado_regions, aes(x = totalvol, y = avgprice, color = region)) +
+  geom_line() +
+  scale_color_viridis_d() +
+  facet_wrap(~region) +
+  labs(x = "Total Volume", y = "Average Price", title = "Avocado Price by Volume") +
+  theme(legend.position = "top") +
+  theme_bw()
+region_plot + transition_reveal(date)
+```
+
+```{r}
+cities_plot <- ggplot(avocado_cities, aes(x = totalvol, y = avgprice, color = region)) +
+  geom_line() +
+  scale_color_viridis_d() +
+  labs(x = "Total Volume", y = "Average Price", title = "Avocado Price by Volume") +
+  theme(legend.position = "top") +
+  theme_bw()
+cities_plot + transition_reveal(date)
+```
+
+##analyzing stock
+```{r}
+library(tidyquant)
+library(dygraphs)
+library(tidyverse)
+library(timetk)
+```
+
+```{r}
+start <- today() - years(1)
+end <- today()
+CVGW_prices <- tq_get("CVGW", get = "stock.prices", from = start, to = end)
+CVGW_prices
+CVGW_monthly <- CVGW_prices %>%
+  tq_transmute(adjusted, mutate_fun = monthlyReturn)
+
+avo_prices <- tq_get("AVO", get = "stock.prices", from = start, to = end)
+avo_prices
+avo_monthly <- avo_prices %>%
+  tq_transmute(adjusted, mutate_fun = monthlyReturn)
+avo_monthly
+
+combined <- tq_get(c("CVGW", "AVO"), get = "stock.prices", from = start, to = end)
+
+
+combinedplot <- combined %>%
+  group_by(symbol) %>%
+  plot_time_series(date, adjusted, 
+                   .facet_ncol = 3,
+                   .interactive = FALSE)
+combinedplot
+```
+It does not look like a very good investment going forward. However, it does look like AVO is rebounding but not 
+on a trend line with a significant amount of growth potential in the near future. CVGW has higher monthly returns,
+but it has been falling off dramatically in recent months.
+
