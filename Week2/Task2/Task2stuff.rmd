@@ -1,0 +1,69 @@
+---
+title: "Task2"
+author: "Mallory Dickerson"
+date: "8/31/2022"
+output: 
+  html_document:
+    theme: cosmo
+    keep_md: true
+---
+
+```{r}
+library(knitr)
+```
+
+```{r}
+#calculating the sin(pi/4)
+sin(pi/4)
+```
+```{r}
+x <- 10/3
+#
+```
+
+```{r}
+MySequence <- seq(1,50, length.out = 7)
+MySequence
+```
+```{r}
+my_vector <- c(1,5,12,31,19)
+my_vector
+```
+```{r}
+7+5 == 12
+#the double equals makes it into a boolean
+```
+```{r}
+(7 + 4 = 12)|(5 - 4 = 1)
+#you can't assign a number as a variable name
+```
+
+```{r}
+#question 1
+#they made a typo.
+
+#question 2
+#library(tidyverse)
+
+#ggplot(dota = mpg) + 
+  #geom_point(mapping = aes(x = displ, y = hwy))
+
+#fliter(mpg, cyl = 8)
+#filter(diamond, carat > 3)
+
+#more typos
+
+#question 3
+#go to "help" then "cheat sheets"
+```
+
+```{r}
+library(tidyverse)
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+
+filter(mpg, cyl = 8)
+filter(diamond, carat > 3)
+```
+
